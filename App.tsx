@@ -34,7 +34,7 @@ const App: React.FC = () => {
   const [isAutoRotate, setIsAutoRotate] = useState(true);
 
   // --- State for Custom Models ---
-  const [currentBaseModel, setCurrentBaseModel] = useState<string>('Eagle');
+  const [currentBaseModel, setCurrentBaseModel] = useState<string>('Cat');
   const [customBuilds, setCustomBuilds] = useState<SavedModel[]>([]);
   const [customRebuilds, setCustomRebuilds] = useState<SavedModel[]>([]);
 
@@ -50,15 +50,14 @@ const App: React.FC = () => {
 
     engineRef.current = engine;
 
-    // Initial Model Load
-    engine.loadInitialModel(Generators.Eagle());
+    // Initial Model Load - Start with Cat
+    engine.loadInitialModel(Generators.Cat());
 
     // Resize Listener
     const handleResize = () => engine.handleResize();
     window.addEventListener('resize', handleResize);
 
-    // Auto-hide welcome screen after interaction (optional, but sticking to simple toggle for now)
-    // For now, just auto-hide after 5s or user dismiss
+    // Auto-hide welcome screen after interaction
     const timer = setTimeout(() => setShowWelcome(false), 5000);
 
     return () => {
@@ -72,11 +71,11 @@ const App: React.FC = () => {
     engineRef.current?.dismantle();
   };
 
-  const handleNewScene = (type: 'Eagle') => {
+  const handleNewScene = (type: keyof typeof Generators) => {
     const generator = Generators[type];
     if (generator && engineRef.current) {
       engineRef.current.loadInitialModel(generator());
-      setCurrentBaseModel('Eagle');
+      setCurrentBaseModel(type);
     }
   };
 

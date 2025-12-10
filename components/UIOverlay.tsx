@@ -19,7 +19,7 @@ interface UIOverlayProps {
   isGenerating: boolean;
   onDismantle: () => void;
   onRebuild: (type: 'Eagle' | 'Cat' | 'Rabbit' | 'Twins') => void;
-  onNewScene: (type: 'Eagle') => void;
+  onNewScene: (type: 'Eagle' | 'Cat' | 'Rabbit') => void;
   onSelectCustomBuild: (model: SavedModel) => void;
   onSelectCustomRebuild: (model: SavedModel) => void;
   onPromptCreate: () => void;
@@ -77,8 +77,8 @@ export const UIOverlay: React.FC<UIOverlayProps> = ({
     }
   }, [isGenerating]);
   
-  // Only show default presets if the current model is the original Eagle
-  const isEagle = currentBaseModel === 'Eagle';
+  // Show default presets if current model is one of the standard set
+  const isStandard = ['Eagle', 'Cat', 'Rabbit'].includes(currentBaseModel);
 
   return (
     <div className="absolute top-0 left-0 w-full h-full pointer-events-none select-none">
@@ -94,7 +94,10 @@ export const UIOverlay: React.FC<UIOverlayProps> = ({
                 color="indigo"
             >
                 <div className="px-2 py-1 text-xs font-bold text-slate-400 uppercase tracking-wider">NEW BUILDS</div>
+                <DropdownItem onClick={() => onNewScene('Cat')} icon={<Cat size={16}/>} label="Cat" />
                 <DropdownItem onClick={() => onNewScene('Eagle')} icon={<Bird size={16}/>} label="Eagle" />
+                <DropdownItem onClick={() => onNewScene('Rabbit')} icon={<Rabbit size={16}/>} label="Rabbit" />
+                
                 <DropdownItem onClick={onPromptCreate} icon={<Wand2 size={16}/>} label="New build" highlight />
                 <div className="h-px bg-slate-100 my-1" />
                 
@@ -201,12 +204,13 @@ export const UIOverlay: React.FC<UIOverlayProps> = ({
                      >
                         <div className="px-2 py-1 text-xs font-bold text-slate-400 uppercase tracking-wider">REBUILD</div>
                         
-                        {/* Standard Presets - Only for Eagle */}
-                        {isEagle && (
+                        {/* Standard Presets - Show if using a standard model */}
+                        {isStandard && (
                             <>
+                                <DropdownItem onClick={() => onRebuild('Eagle')} icon={<Bird size={18}/>} label="Eagle" />
                                 <DropdownItem onClick={() => onRebuild('Cat')} icon={<Cat size={18}/>} label="Cat" />
                                 <DropdownItem onClick={() => onRebuild('Rabbit')} icon={<Rabbit size={18}/>} label="Rabbit" />
-                                <DropdownItem onClick={() => onRebuild('Twins')} icon={<Users size={18}/>} label="Eagles x2" />
+                                <DropdownItem onClick={() => onRebuild('Twins')} icon={<Users size={18}/>} label="Twins" />
                                 <div className="h-px bg-slate-100 my-1" />
                             </>
                         )}
